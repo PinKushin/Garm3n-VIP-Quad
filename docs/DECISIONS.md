@@ -328,3 +328,40 @@ the mode, look, and change only what is visibly wrong.
 Also worth keeping: 12v12 tournament mode WOULD overflow, since 24 boxes at 50 wide
 is 1200 in a 640-wide space. It does not matter, because competitive is 6v6 and casual
 12v12 uses HudMatchStatus rather than this panel.
+
+## 15. Selectively suppressing the Options tooltips is NOT possible from the .res files
+
+The Options and Advanced Options buttons show a mouseover tooltip that just repeats
+the label already under the cursor. The icon row along the bottom also has tooltips,
+and those ARE wanted. Three ways to suppress only the first pair were tried. All
+three failed, each differently, and all three are recorded so they are not retried.
+
+**1. Remove TooltipPanel entirely.** Kills every tooltip including the icon row's,
+which is the opposite of what is wanted. `TooltipPanel` is a single shared panel;
+there is no per-button instance to target.
+
+**2. Park TooltipPanel offscreen (`ypos 9999`).** Did nothing at all.
+`CHudMainMenuOverride` positions the tooltip at the cursor via `SetPos` when it shows
+it, so the `.res` position is overwritten every time. A panel the client repositions
+cannot be hidden by moving it.
+
+**3. Declare the buttons in `GameMenu.res` with `"tooltip" ""`.** Tested on a branch
+behind the smoke test, which passed — no crash. Then looked at, and it failed twice:
+the buttons were **duplicated** on the menu, and the tooltips **still appeared**. The
+client's hardcoded tooltip wins over an empty one in this file, and declaring a
+control the client already builds produces a second copy.
+
+**Why the difference exists at all:** in stock TF2 these two are ICONS with
+`labelText ""`, so a tooltip naming them is doing real work. Garm3n gave them text
+labels, which makes the client's tooltip redundant. The text comes from the client,
+not from any file, and there is no tooltip key in `MainMenuOverride.res` for them —
+the only `*tip*` keys stock defines there are `TooltipPanel`, `TipLabel`,
+`TipSubLabel` and `RankTooltipPanel`.
+
+**The one remaining route, not taken:** give those two buttons stock's empty
+`labelText` and an icon, so the tooltip becomes the label instead of a duplicate of
+it. That is a visual change to the menu rather than a fix, so it is the owner's call.
+
+They were left visible with `TooltipPanel` at `zpos 10000` (stock's value; this HUD
+shipped 1, which is why they drew UNDER the menu text and read as a glitch). Layered
+correctly they are merely redundant rather than broken.
