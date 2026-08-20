@@ -365,3 +365,42 @@ it. That is a visual change to the menu rather than a fix, so it is the owner's 
 They were left visible with `TooltipPanel` at `zpos 10000` (stock's value; this HUD
 shipped 1, which is why they drew UNDER the menu text and read as a glitch). Layered
 correctly they are merely redundant rather than broken.
+
+---
+
+### C5. CORRECTION — "Garm3n" throughout this document means the HUD, not the author
+
+I attribute design choices to Garm3n all over this file. That attribution is wrong,
+and the repository history says so plainly:
+
+```
+33  pinkushin <pinkushin@verizon.net>     (this fork, 2026)
+17  Hypnootize <9hypnotize3@gmail.com>    (everything before it)
+```
+
+**Every pre-fork commit is Hypnootize's, including "Initial commit" (2017-09-19).**
+Jungle Inferno Update, Competitive Update Fix, Main Menu Fix, MvM Fix — all of them.
+The owner supplied the context:
+
+> "garm3n wasnt the last one to update this hud in 2017/2018 it was hypnotyze that
+> updated all/or most of the old huds to the modern format so they wouldnt crash"
+
+Garm3n designed the HUD — it carries his name, his fonts (`Garm3n42`, `Garm3nWhite`)
+and his visual identity. But this repo contains none of his commits. It starts at
+Hypnootize's import of an already-finished HUD, and everything after is his
+compatibility work.
+
+**Why this matters and is not pedantry.** The question this whole document keeps
+circling — is a missing panel deliberate design or rot? — has a third answer I never
+considered: it may be **Hypnootize stripping a panel in 2017-2018 to stop the HUD
+crashing** on a then-current TF2. That is neither Garm3n's aesthetic nor Valve adding
+surface, and it reads identically to both.
+
+Entries 5, 8, 12, 13 and 14 all lean on "Garm3n deliberately chose this". Read those
+as "the HUD as it stands does this, for reasons that may be Garm3n's design or
+Hypnootize's compatibility work, and this repo cannot distinguish them." The
+conclusions still hold — the squared corners and the stripped decoration are
+consistent enough to be deliberate by someone — but the attribution does not.
+
+There is no pre-2017 history here to check against, so distinguishing them would need
+Garm3n's original release, which this fork does not contain.
