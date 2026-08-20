@@ -1658,8 +1658,17 @@
 			"ypos"			"r172"
 			"zpos"			"-3"
 			"wide"			"530"
-			"tall"			"65"
-			"tall_minmode"		"44"
+			// THIS is the box behind the stats block, despite the name. ypos r172 is
+			// the first stats row and tall is the span down to the last row plus one
+			// row's height, so the original 65 was exactly six rows (r172..r122 = 50,
+			// plus 15). Adding the Damage/Support row needs a seventh: 65 -> 75, and
+			// minmode 44 -> 51 on its 7-unit ladder.
+			//
+			// MainBG is NOT this panel. It backs the PLAYER LIST, above the stats in
+			// 16v16 and below them in 6v6. I grew MainBG twice trying to fix this and
+			// only found the real panel by tinting MainBG bright red and looking.
+			"tall"			"75"
+			"tall_minmode"		"51"
 			"fillcolor"		"0 0 0 150"
 			"autoResize"	"0"
 			"pinCorner"		"0"
@@ -1670,7 +1679,7 @@
 			{
 				"xpos"		"c-295"
 				"wide"		"590"
-				"tall"		"65"
+				"tall"		"75"
 			}
 		}
 		"Versus"
