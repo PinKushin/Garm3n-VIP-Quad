@@ -1,0 +1,4 @@
+# TF2 writes this into whatever directory the HUD is installed from. When the
+# repo is junctioned into tf/custom/ so edits go live without recopying, the
+# game creates it inside the working tree.
+sound/sound.cache

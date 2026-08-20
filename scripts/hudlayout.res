@@ -78,11 +78,22 @@
 		"fgcolor"		"255 255 255 255"
 	}
 
+	// Enabled. This is the HUD's dot crosshair; the game's own crosshair is
+	// switched off with `crosshair 0` in autoexec.cfg. The two are independent
+	// systems -- this is a HUD panel, so the cvar does not hide it.
+	//
+	// Colour matches the green the stock crosshair was already set to in
+	// config.cfg (cl_crosshair_red 0 / green 255 / blue 0). Change fgcolor back
+	// to "255 255 255 255" for the HUD's original white.
+	//
+	// The other four crosshairs in this file (CrossHairNormal, CrossHairRequest,
+	// CrossHairCircle, CroutonCircle) stay visible 0 -- enabling more than one
+	// draws them stacked.
 	CrossHairDotOutline
 	{
 		"controlName"	"CExLabel"
 		"fieldName"	 	"CrossHairDotOutline"
-		"visible"		"0"
+		"visible"		"1"
 		"enabled"		"1"
 		"zpos"			"1"
 
@@ -93,7 +104,7 @@
 
 		"font"			"CrossHairDotOutline"
 		"labelText"		"+"
-		"fgcolor"		"255 255 255 255"
+		"fgcolor"		"0 255 0 255"
 		"textAlignment"	"center"
 	}
 
