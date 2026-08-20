@@ -115,6 +115,9 @@ function Stop-Tf2 {
     if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue }
 }
 
+# Callers MUST wrap this in @(). A PowerShell function returning an empty array unrolls it to
+# $null on the way out, and $null.Count throws under Set-StrictMode. Returning ,@() would also
+# work but is easy to delete by accident; wrapping at the call site is the visible version.
 function Get-NewDumps {
     if (-not (Test-Path $dumpDir)) { return @() }
     @(Get-ChildItem $dumpDir -Filter 'crash_tf_win64*.dmp' -ErrorAction SilentlyContinue |
@@ -126,7 +129,7 @@ $deadline = (Get-Date).AddSeconds($LaunchTimeoutSeconds)
 $reached  = $false
 while ((Get-Date) -lt $deadline) {
     if ($proc.HasExited) {
-        $d = Get-NewDumps
+        $d = @(Get-NewDumps)
         Fail "TF2 exited during startup, before reaching the menu. New dumps: $($d.Count) $($d -join ', ')"
     }
     if ((Get-NewLog) -match [regex]::Escape($marker)) { $reached = $true; break }
@@ -144,14 +147,14 @@ Info 'marker reached; menu commands executed'
 $settleEnd = (Get-Date).AddSeconds($SettleSeconds)
 while ((Get-Date) -lt $settleEnd) {
     if ($proc.HasExited) {
-        $d = Get-NewDumps
-        Fail "TF2 died $([int]((Get-Date) - $settleEnd).TotalSeconds + $SettleSeconds)s after reaching the menu. New dumps: $($d.Count) $($d -join ', ')"
+        $d = @(Get-NewDumps)
+        Fail "TF2 died during the ${SettleSeconds}s settle period after reaching the menu. New dumps: $($d.Count) $($d -join ', ')"
     }
     Start-Sleep -Milliseconds 500
 }
 
 # --- Condition 3: the oracle ------------------------------------------------------------------
-$newDumps = Get-NewDumps
+$newDumps = @(Get-NewDumps)
 if ($newDumps.Count -gt 0) {
     Stop-Tf2
     Fail "Steam wrote $($newDumps.Count) new crash dump(s) even though the process survived: $($newDumps -join ', ')"
