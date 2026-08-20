@@ -31,8 +31,13 @@
 		"ypos_minmode"		"r385"
 		"zpos"			"-1"
 		"wide"			"530"
-		"tall"			"250"
-		"tall_minmode"		"106"
+		// Grown by exactly one stats row to cover the Damage/Support row added to
+		// LocalPlayerStatsPanel. Confirmed by looking: with the row added and this
+		// left at 250, the last row rendered past the bottom of the panel.
+		// The row ladders step 10 in normal and 7 in minmode, so: 250 -> 260,
+		// 106 -> 113, and the MvM variant 171 -> 181.
+		"tall"			"260"
+		"tall_minmode"		"113"
 		"fillcolor"		"0 0 0 175"
 		"autoResize"	"0"
 		"pinCorner"		"0"
@@ -44,7 +49,7 @@
 			"xpos"			"c-295"
 			"ypos"			"r394"
 			"wide"			"402"
-			"tall"			"171"
+			"tall"			"181"
 		}
 	}
 	"MvMBG"
