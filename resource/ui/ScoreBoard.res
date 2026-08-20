@@ -31,13 +31,18 @@
 		"ypos_minmode"		"r385"
 		"zpos"			"-1"
 		"wide"			"530"
-		// Grown by exactly one stats row to cover the Damage/Support row added to
-		// LocalPlayerStatsPanel. Confirmed by looking: with the row added and this
-		// left at 250, the last row rendered past the bottom of the panel.
-		// The row ladders step 10 in normal and 7 in minmode, so: 250 -> 260,
-		// 106 -> 113, and the MvM variant 171 -> 181.
+		// Grown to cover the Damage/Support row added to LocalPlayerStatsPanel.
+		// The row ladders step 10 in normal and 7 in minmode.
+		//
+		// Normal: 250 -> 260, one row. Confirmed correct by looking.
+		//
+		// Minmode: 106 -> 113 -> 120, TWO rows. One row was not enough, which was
+		// only visible by looking at 6v6 -- the last row still rendered on the
+		// lighter background below the panel edge while 16v16 was already right.
+		// The two modes needed different amounts, so verifying one said nothing
+		// about the other.
 		"tall"			"260"
-		"tall_minmode"		"113"
+		"tall_minmode"		"120"
 		"fillcolor"		"0 0 0 175"
 		"autoResize"	"0"
 		"pinCorner"		"0"
