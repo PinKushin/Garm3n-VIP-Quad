@@ -250,3 +250,44 @@ resolves it is a person looking at the running game.
 Still unverified as of this entry: whether `MainBG` now covers the Damage/Support row
 after entry 9 grew it. That is a separate question about a change I made, not about the
 gaps above.
+
+## 13. Adding a scoreboard stats row touches THREE coupled places
+
+Adding the Damage/Support row took six attempts, four of them wrong, because the
+stats block's layout is coupled across three panels that must all move together.
+Written down so the next row costs one attempt instead of six.
+
+**1. The box behind the stats is `LocalPlayerStatsPanel > HorizontalLine`.** An
+`ImagePanel` at `zpos -3` with `fillcolor 0 0 0 150`. The name describes an old
+purpose and is why three passes of reasoning never found it. Its `tall` is the span
+from the first row down to the last, plus one row height — the original 65 was
+exactly six rows (`r172`..`r122` = 50, plus 15). Seven rows needs 75.
+
+**It is NOT `MainBG`.** `MainBG` backs the player list — above the stats in 16v16,
+below them in 6v6, never behind them. I grew it twice and both times it overlapped
+neighbours. There is now a comment on it saying so.
+
+**2. The minmode cluster below must move down by the same amount.** Thirteen panels
+(team bars, team scores, player counts, `MainBG`, both player lists). In 6v6 the
+stats sit at the top, so a taller box eats into the team bar. `MainBG` also needs
+its `tall_minmode` reduced by the same amount its `ypos_minmode` moved, or its
+bottom edge runs into `ServerLabel`, which is not part of the cluster.
+
+**3. The score block must re-centre.** `Kills2`, `Versus`, `Deaths2` and `MapName`.
+Note these are in two different coordinate frames — the first three are children of
+`LocalPlayerStatsPanel`, `MapName` is top-level — so their `r` offsets measure from
+different origins and must be converted before comparing.
+
+### The centring arithmetic was wrong, and predictably so
+
+Computing it gave down 10 / 7; the answer that looks right is down 7 / 5. Centring
+the block's bounding box on the panel's bounding box is not the same as looking
+centred: `0:0` is a tall glyph with the map name beneath, so its optical centre sits
+below its geometric one. No amount of arithmetic finds that.
+
+### How the real panel was finally identified
+
+By setting `MainBG`'s `fillcolor` to bright red and looking at both modes. That
+should have been the first move, not the fifth. **When a panel cannot be identified
+by reading, make it visible.** Coordinate reasoning here was repeatedly
+self-consistent and wrong, and one screenshot settled it in seconds.
