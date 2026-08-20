@@ -28,17 +28,21 @@
 		"fieldName"		"MainBG"
 		"xpos"			"c-265"
 		"ypos"			"r395"
-		"ypos_minmode"		"r385"
+		"ypos_minmode"		"r378"
 		"zpos"			"-1"
 		"wide"			"530"
-		// ORIGINAL VALUES, restored. Do not grow this to fix the stats block.
+		// Do NOT grow this to fix the stats block. This backs the PLAYER LIST -- it
+		// sits above the stats in 16v16 and below them in 6v6, never behind them.
+		// The stats box is LocalPlayerStatsPanel > HorizontalLine. I grew this twice
+		// by mistake and both times it overlapped neighbours; identified for certain
+		// by tinting it bright red and looking.
 		//
-		// I twice grew MainBG trying to cover the Damage/Support row and was wrong
-		// both times: this is not the panel behind the stats, and enlarging it made
-		// it overlap elements that previously did not collide. Reverted to 250 /
-		// 106 / 171 on the owner's report.
+		// tall_minmode 106 -> 99 pairs with ypos_minmode r385 -> r378. The whole
+		// minmode cluster moved down 7 to clear the taller stats box, and shrinking
+		// this by the same 7 keeps its BOTTOM edge where it was -- otherwise it runs
+		// into ServerLabel, which sits just below it and did not move.
 		"tall"			"250"
-		"tall_minmode"		"106"
+		"tall_minmode"		"99"
 		"fillcolor"		"0 0 0 175"
 		"autoResize"	"0"
 		"pinCorner"		"0"
@@ -79,7 +83,7 @@
 		"fieldName"		"BlueScoreBG"
 		"xpos"			"c-265"
 		"ypos"			"r419"
-		"ypos_minmode"		"r409"
+		"ypos_minmode"		"r402"
 		"wide"			"265"
 		"tall"			"19"
 		"autoResize"	"0"
@@ -110,7 +114,7 @@
 		"textAlignment"	"west"
 		"xpos"			"c-262"
 		"ypos"			"r425"
-		"ypos_minmode"		"r415"
+		"ypos_minmode"		"r408"
 		"wide"			"100"
 		"tall"			"29"
 		"autoResize"	"0"
@@ -133,7 +137,7 @@
 		"textAlignment"	"east"
 		"xpos"			"c-149"
 		"ypos"			"r434"
-		"ypos_minmode"		"r424"
+		"ypos_minmode"		"r417"
 		"zpos"			"5"
 		"wide"			"141"
 		"tall"			"41"
@@ -155,7 +159,7 @@
 		"textAlignment"	"east"
 		"xpos"			"c-148"
 		"ypos"			"r433"
-		"ypos_minmode"		"r423"
+		"ypos_minmode"		"r416"
 		"zpos"			"4"
 		"wide"			"141"
 		"tall"			"41"
@@ -177,7 +181,7 @@
 		"textAlignment"	"center"
 		"xpos"			"c-265"
 		"ypos"			"r417"
-		"ypos_minmode"		"r407"
+		"ypos_minmode"		"r400"
 		"wide"			"265"
 		"tall"			"15"
 		"visible"		"1"
@@ -194,7 +198,7 @@
 		"fieldName"		"RedScoreBG"
 		"xpos"			"c0"
 		"ypos"			"r419"
-		"ypos_minmode"		"r409"
+		"ypos_minmode"		"r402"
 		"wide"			"265"
 		"tall"			"19"
 		"autoResize"	"0"
@@ -225,7 +229,7 @@
 		"textAlignment"	"east"
 		"xpos"			"c162"
 		"ypos"			"r425"
-		"ypos_minmode"		"r415"
+		"ypos_minmode"		"r408"
 		"wide"			"100"
 		"tall"			"29"
 		"autoResize"	"0"
@@ -248,7 +252,7 @@
 		"textAlignment"	"west"
 		"xpos"			"c8"
 		"ypos"			"r434"
-		"ypos_minmode"		"r424"
+		"ypos_minmode"		"r417"
 		"zpos"			"5"
 		"wide"			"140"
 		"tall"			"41"
@@ -270,7 +274,7 @@
 		"textAlignment"	"west"
 		"xpos"			"c9"
 		"ypos"			"r433"
-		"ypos_minmode"		"r423"
+		"ypos_minmode"		"r416"
 		"zpos"			"4"
 		"wide"			"140"
 		"tall"			"41"
@@ -292,7 +296,7 @@
 		"textAlignment"	"center"
 		"xpos"			"c0"
 		"ypos"			"r417"
-		"ypos_minmode"		"r407"
+		"ypos_minmode"		"r400"
 		"wide"			"265"
 		"tall"			"15"
 		"visible"		"1"
@@ -390,7 +394,7 @@
 		"fieldName"		"BluePlayerList"
 		"xpos"			"c-264"
 		"ypos"			"r395"
-		"ypos_minmode"		"r385"
+		"ypos_minmode"		"r378"
 		"zpos"			"20"
 		"wide"			"263"
 		"tall"			"247"
@@ -412,7 +416,7 @@
 		"fieldName"		"RedPlayerList"
 		"xpos"			"c2"
 		"ypos"			"r395"
-		"ypos_minmode"		"r385"
+		"ypos_minmode"		"r378"
 		"zpos"			"20"
 		"wide"			"263"
 		"tall"			"247"
