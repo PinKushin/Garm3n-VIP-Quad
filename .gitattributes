@@ -1,5 +1,11 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Text files are normalized to LF in the repository AND in the working tree.
+# Source VDF/KeyValues parsers read LF without complaint on every platform.
+* text=auto eol=lf
+
+# Fonts are binary; never let eol normalization touch them.
+*.ttf binary
+*.otf binary
+*.vtf binary
 
 *.vdf linguist-detectable=true
 *.res linguist-detectable=true linguist-language=vdf
