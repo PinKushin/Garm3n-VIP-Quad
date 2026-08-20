@@ -7,7 +7,7 @@ on the repository is a person, and none of this is in the code.
 
 ## quad — the player it was built for
 
-**Christian "quad" Sørensen**, Danish, Scout. Active in European competitive TF2 from
+**Christian "quad" Sørensen**, Danish, Scout. A pro-level player in European competitive TF2 from
 roughly 2011 to 2015, with a final appearance in 2019.
 
 Known for DM and tracking, **particularly with the pistol**. The nickname is the quad
@@ -44,12 +44,6 @@ ETF2L Nations Cup #3 representing **Denmark**.
 
 Later: 1st in the ETF2L Season 21 preseason Premiership playoffs (2015, team "lol"),
 and 13th–16th at Copenhagen Games 2019 Open Groups with pheas.
-
-### A note on terminology
-
-European TF2's top division is **Premiership**, not Invite — "Invite" is the North
-American term (ESEA, later RGL). quad was Premiership and LAN-winning, which is the
-equivalent tier.
 
 ---
 
