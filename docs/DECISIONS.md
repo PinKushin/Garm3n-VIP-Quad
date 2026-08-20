@@ -301,3 +301,30 @@ By setting `MainBG`'s `fillcolor` to bright red and looking at both modes. That
 should have been the first move, not the fifth. **When a panel cannot be identified
 by reading, make it visible.** Coordinate reasoning here was repeatedly
 self-consistent and wrong, and one screenshot settled it in seconds.
+
+## 14. Corroboration finds DIFFERENCE, not defect — HudTournament.res proves it
+
+The rot checker scores each gap by how many of rayshud, flawhud and budhud carry the
+panel. `HudTournament.res` scored **30 of 30 at 3-of-3** — the only file to score
+perfectly, and the strongest candidate the tool has ever produced.
+
+The owner then loaded tournament mode with 11 bots and looked at it. It is fine. The
+ready panel renders correctly, the per-player boxes fill the row edge to edge at 6v6
+with no overlap, and it looks better full than empty.
+
+**So a 3-of-3 score means "Garm3n differs from the other three", not "Garm3n is
+broken".** The other HUDs carry those panels because they restyle them; Garm3n omits
+them and inherits stock defaults, which look right. Both are valid outcomes and the
+score cannot tell them apart.
+
+That is still a large improvement over an unscored list — it took 275 absolute gaps
+down to a handful of candidates — but the column is a **filter**, not a verdict. The
+last step is always someone triggering the mode and looking.
+
+Practical consequence for the remaining candidates (`HudObjectiveFlagPanel` 11,
+`winpanel` 8, `HudMenuTauntSelection` 8): do not "fix" them from the gap list. Trigger
+the mode, look, and change only what is visibly wrong.
+
+Also worth keeping: 12v12 tournament mode WOULD overflow, since 24 boxes at 50 wide
+is 1200 in a 640-wide space. It does not matter, because competitive is 6v6 and casual
+12v12 uses HudMatchStatus rather than this panel.
