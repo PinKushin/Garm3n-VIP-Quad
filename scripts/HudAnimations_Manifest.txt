@@ -1,9 +1,7 @@
 hudanimations_manifest
 {
-	// Load order matters: a later file's definition of an event REPLACES an
-	// earlier one. The HUD's own file must therefore come last, or every event
-	// it redefines is silently overwritten by the stock definition.
-	"file"		"scripts/hudanimations.txt"
-	"file"		"scripts/hudanimations_tf.txt"
-	"file"		"scripts/hudanimations_custom.txt"
+
+	"file" "scripts/hudanimations.txt"
+	"file" "scripts/hudanimations_custom.txt"
+	"file" "scripts/hudanimations_tf.txt"
 }
