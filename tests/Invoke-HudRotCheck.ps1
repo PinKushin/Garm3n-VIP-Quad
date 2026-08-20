@@ -13,6 +13,10 @@
 
     Checks run:
       1. rot        panels stock defines that our override of the same file does not
+      1b. missingfile  a whole file every reference HUD ships that neither stock nor we do.
+                    The rot check compares panels WITHIN files present in both trees and is
+                    blind to a file absent entirely -- which is how
+                    HudItemEffectMeter_Action.res spammed the console for years.
       2. scheme     font/color/border names our files reference that our ClientScheme lacks
       3. loc        #Tokens our files reference that are not in tf_english.txt
       4. structure  files that do not parse or have unbalanced braces
@@ -249,6 +253,64 @@ foreach ($f in $hudFiles) {
 }
 
 # ---------------------------------------------------------------------------------------------
+# 1b. missingfile  -- a file every reference HUD ships that NOBODY here provides
+# ---------------------------------------------------------------------------------------------
+# The rot check above compares panels WITHIN files present in both trees, so it is structurally
+# blind to a file that is absent entirely. That blindness cost a real defect:
+# HudItemEffectMeter_Action.res existed in neither stock nor this HUD, and TF2 asked for it on
+# every spawn, printing "Failed to load" 26 times a session for years.
+#
+# The signal is narrow on purpose. A stock file we simply do not override is NOT a finding --
+# TF2 falls back to stock and everything works, and that describes most of the stock tree. What
+# matters is a file the maintained HUDs all ship which stock does NOT, because that means Valve
+# asks for something it never shipped and HUD authors fill the gap by hand.
+#
+# Requiring all three reference HUDs filters their own private files: budhud's bh_* helpers and
+# rayshud's customization variants are unique to them and never score 3.
+if ($refIndex.Count -ge 2) {
+    $stockNames = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    foreach ($f in (Get-ChildItem $stockRoot -Recurse -File -Filter '*.res')) { [void]$stockNames.Add($f.Name) }
+
+    # The extracted cache is tf2_misc only, but the client also loads UI from hl2 and platform --
+    # ConfirmDialog.res, MainPanel.res and MessageBoxDialog.res all live in hl2_misc_dir.vpk.
+    # Listing those VPKs (names only, no extraction) stops them reporting as missing. Found the
+    # hard way: all three showed up as false positives on this check's first run.
+    foreach ($extra in @('hl2\hl2_misc_dir.vpk', 'platform\platform_misc_dir.vpk')) {
+        $vp = Join-Path $tf $extra
+        if (-not (Test-Path $vp)) { continue }
+        foreach ($line in (& $vpk l $vp 2>$null)) {
+            $l = ($line -replace "`r", '').Trim()
+            if ($l -match '\.res$') { [void]$stockNames.Add([System.IO.Path]::GetFileName($l)) }
+        }
+    }
+
+    # HUD-authoring conventions the GAME never requests. rayshud, flawhud and budhud all split
+    # ClientScheme into #base'd parts, so clientscheme_colors.res and clientscheme_borders.res
+    # score 3-of-3 while existing nowhere in TF2. Garm3n keeps one monolithic ClientScheme, which
+    # is a valid choice, not a missing file.
+    $conventionOnly = '^clientscheme_'
+    $ourNames = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    foreach ($f in $hudFiles) { [void]$ourNames.Add($f.Name) }
+
+    $counts = @{}
+    foreach ($hud in $refIndex.Keys) {
+        foreach ($n in $refIndex[$hud].Keys) {
+            if (-not $counts.ContainsKey($n)) { $counts[$n] = 0 }
+            $counts[$n]++
+        }
+    }
+    $need = $refIndex.Count      # all of them
+    foreach ($n in ($counts.Keys | Sort-Object)) {
+        if ($counts[$n] -lt $need) { continue }
+        if ($n -match $conventionOnly) { continue }  # HUD convention, not a game request
+        if ($stockNames.Contains($n)) { continue }   # stock provides it; not our problem
+        if ($ourNames.Contains($n))   { continue }   # we already have it
+        Add-Finding 'missingfile' $n `
+            "every reference HUD ships this and neither stock nor we do -- TF2 has nothing to load"
+    }
+}
+
+# ---------------------------------------------------------------------------------------------
 # 2. scheme  -- names our files reference that our own ClientScheme does not define
 # ---------------------------------------------------------------------------------------------
 $schemePath = Join-Path $repo 'resource\ClientScheme.res'
@@ -311,9 +373,10 @@ if ($locFiles.Count -gt 0) {
 # ---------------------------------------------------------------------------------------------
 # Report
 # ---------------------------------------------------------------------------------------------
-$order = 'structure','rot','scheme','loc'
+$order = 'structure','missingfile','rot','scheme','loc'
 $labels = @{
     structure = 'STRUCTURE  file does not parse'
+    missingfile = 'MISSINGFILE  a file every reference HUD ships and nobody here provides'
     rot       = 'ROT        stock has a panel this HUD does not'
     scheme    = 'SCHEME     name referenced but never defined'
     loc       = 'LOC        localization token does not exist'
