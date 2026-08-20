@@ -1534,6 +1534,116 @@
 				"ypos"		"r122"
 			}
 		}
+		// Damage and Support arrived with Meet Your Match and were never added
+		// here, so this HUD has shown no personal damage or support readout at
+		// all. The stock "Damage" and "Support" controls further down are the
+		// zeroed-and-hidden originals this HUD keeps for every stat; the visible
+		// pair follows the LabelText/%var% convention used by every row above.
+		// The engine sets the dialog variable on LocalPlayerStatsPanel, not on a
+		// named control, so any child label carrying %damage% is filled in.
+		//
+		// Row 7 continues both ladders: normal ypos steps by 10 (r172..r122 -> r112),
+		// minmode steps by 7 (r175..r140 -> r133).
+		"DamageLabel"
+		{
+			"ControlName"	"CExLabel"
+			"fieldName"		"DamageLabel"
+			"font"			"Garm3n10Spec"
+			"font_minmode"		"ScoreboardVerySmall"
+			"labelText"		"#TF_Scoreboard_Damage"
+			"fgcolor"		"Garm3nWhite"
+			"textAlignment"		"west"
+			"xpos"			"c-68"
+			"ypos"			"r112"
+			"ypos_minmode"		"r133"
+			"zpos"			"3"
+			"wide"			"162"
+			"tall"			"15"
+			"visible"		"1"
+			"enabled"		"1"
+
+			if_mvm
+			{
+				"font"		"Garm3n10Spec"
+				"xpos"		"c-75"
+				"ypos"		"r112"
+			}
+		}
+		"Damage2"
+		{
+			"ControlName"	"CExLabel"
+			"fieldName"		"Damage2"
+			"font"			"Garm3n10Spec"
+			"font_minmode"		"ScoreboardVerySmall"
+			"labelText"		"%damage%"
+			"fgcolor"		"Garm3nWhite"
+			"textAlignment"	"east"
+			"xpos"			"c-70"
+			"ypos"			"r112"
+			"ypos_minmode"		"r133"
+			"zpos"			"3"
+			"wide"			"162"
+			"tall"			"15"
+			"visible"		"1"
+			"enabled"		"1"
+
+			if_mvm
+			{
+				"font"		"Garm3n10Spec"
+				"xpos"		"c-60"
+				"ypos"		"r112"
+			}
+		}
+		"SupportLabel"
+		{
+			"ControlName"	"CExLabel"
+			"fieldName"		"SupportLabel"
+			"font"			"Garm3n10Spec"
+			"font_minmode"		"ScoreboardVerySmall"
+			"labelText"		"#TF_Scoreboard_Support"
+			"fgcolor"		"Garm3nWhite"
+			"textAlignment"		"west"
+			"xpos"			"c100"
+			"ypos"			"r112"
+			"ypos_minmode"		"r133"
+			"zpos"			"3"
+			"wide"			"162"
+			"tall"			"15"
+			"visible"		"1"
+			"enabled"		"1"
+
+			if_mvm
+			{
+				"font"		"Garm3n10Spec"
+				"xpos"		"c110"
+				"ypos"		"r112"
+			}
+		}
+		"Support2"
+		{
+			"ControlName"	"CExLabel"
+			"fieldName"		"Support2"
+			"font"			"Garm3n10Spec"
+			"font_minmode"		"ScoreboardVerySmall"
+			"labelText"		"%support%"
+			"fgcolor"		"Garm3nWhite"
+			"textAlignment"	"east"
+			"xpos"			"c99"
+			"ypos"			"r112"
+			"ypos_minmode"		"r133"
+			"zpos"			"3"
+			"wide"			"162"
+			"tall"			"15"
+			"visible"		"1"
+			"enabled"		"1"
+
+			if_mvm
+			{
+				"font"		"Garm3n10Spec"
+				"xpos"		"c125"
+				"ypos"		"r112"
+			}
+		}
 		"HorizontalLine"
 		{
 			"ControlName"	"ImagePanel"
