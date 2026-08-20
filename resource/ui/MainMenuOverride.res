@@ -376,8 +376,19 @@
 	{
 		"ControlName"	"CExImageButton"
 		"fieldName"		"CycleRankTypeButton"
+		// Raised one text line, 106 -> 119, so it sits beside the rank TYPE line
+		// (CASUAL / COMPETITIVE) instead of the description line beneath it.
+		//
+		// Stock has this at cs-0.5-44 / cs-0.5-134. Garm3n moved it 53 left and 28
+		// down; the leftward move is his layout and is kept, the downward move is
+		// what dropped it onto the description. That is fine beside "LEVEL: 79" and
+		// overlaps "WIN 10 MORE MATCHES".
+		//
+		// Raised rather than shifted right because it fixes the class, not the one
+		// string: any long rank description does the same thing, and the type line
+		// is always short.
 		"xpos"			"cs-0.5-97"
-		"ypos"			"cs-0.5-106"
+		"ypos"			"cs-0.5-119"
 		"zpos"			"15"
 		"wide"			"15"
 		"tall"			"15"
