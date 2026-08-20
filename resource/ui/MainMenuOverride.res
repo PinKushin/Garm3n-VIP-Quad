@@ -387,8 +387,12 @@
 		// Raised rather than shifted right because it fixes the class, not the one
 		// string: any long rank description does the same thing, and the type line
 		// is always short.
+		//
+		// Then nudged 2 more units by eye, 119 -> 121. Note these are NOT pixels:
+		// the layout is a 480-unit vertical space, so at 1080p one unit is 2.25px
+		// and 2 units is about 4.5px on screen.
 		"xpos"			"cs-0.5-97"
-		"ypos"			"cs-0.5-119"
+		"ypos"			"cs-0.5-121"
 		"zpos"			"15"
 		"wide"			"15"
 		"tall"			"15"
