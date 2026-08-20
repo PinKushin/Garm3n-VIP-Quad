@@ -133,6 +133,61 @@ if (Test-Path $snapshotPath) {
     }
 }
 
+# ---------------------------------------------------------------------------------------------
+# Reference HUDs -- the control group
+# ---------------------------------------------------------------------------------------------
+# A gap on its own is ambiguous: "Valve added this panel" and "Garm3n deleted this panel" both
+# look like a block in stock that is absent here. One subject cannot separate them.
+#
+# Three actively maintained HUDs can. If rayshud, flawhud and budhud all carry a panel this HUD
+# lacks, Garm3n is the outlier and it is probably rot. If they all drop it too, it is something
+# HUD authors routinely strip and almost certainly design.
+#
+# This is not hypothetical -- scoring the existing snapshot this way contradicted my own
+# recommendations. HudStopWatch.res scored 0/3 (every maintained HUD drops all 8 of its gaps) and
+# ScoreBoard.res scored 0/3 on every entry, yet I had put both forward as work. HudTournament.res
+# scored 30/30 at 3-of-3, which is the one that is genuinely behind.
+#
+# Populate with resource/ and scripts/ .res and .txt from each HUD, under refhuds/<name>/.
+# Absent entirely, everything still works and the column is simply omitted.
+$refRoot  = Join-Path $env:LOCALAPPDATA 'Garm3n-HudRot\refhuds'
+$refIndex = @{}
+if (Test-Path $refRoot) {
+    foreach ($hud in (Get-ChildItem $refRoot -Directory)) {
+        $idx = @{}
+        foreach ($f in (Get-ChildItem $hud.FullName -Recurse -File -Include '*.res')) {
+            $key = $f.Name.ToLowerInvariant()
+            if (-not $idx.ContainsKey($key)) {
+                $idx[$key] = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+            }
+            foreach ($w in [regex]::Matches([System.IO.File]::ReadAllText($f.FullName), '[A-Za-z0-9_]+')) {
+                [void]$idx[$key].Add($w.Value)
+            }
+        }
+        $refIndex[$hud.Name] = $idx
+    }
+    Info "reference HUDs: $($refIndex.Keys -join ', ')"
+} else {
+    Info "no reference HUDs at $refRoot -- corroboration column disabled"
+}
+
+function Get-RefScore {
+    <#  How many reference HUDs define this panel in their copy of the same file.
+        Matches the leaf name inside the same-named .res anywhere in that HUD's tree, which is
+        deliberately loose: budhud splits one stock file across many, so an exact path match
+        would report false absences.  #>
+    param([string]$RelFile, [string]$PanelPath)
+    if ($refIndex.Count -eq 0) { return $null }
+    $base = [System.IO.Path]::GetFileName($RelFile).ToLowerInvariant()
+    $leaf = ($PanelPath -split '\.')[-1]
+    $n = 0
+    foreach ($hud in $refIndex.Keys) {
+        $idx = $refIndex[$hud]
+        if ($idx.ContainsKey($base) -and $idx[$base].Contains($leaf)) { $n++ }
+    }
+    return $n
+}
+
 $findings = [System.Collections.Generic.List[object]]::new()
 $accepted = [System.Collections.Generic.List[object]]::new()
 $allGaps  = [System.Collections.Generic.List[string]]::new()
@@ -176,7 +231,21 @@ foreach ($f in $hudFiles) {
         $p = $_
         -not $ours.Contains($p) -and ($stock | Where-Object { $_.StartsWith("$p.") } | Select-Object -First 1)
     })
-    foreach ($m in $missingBlocks) { Add-Finding 'rot' "${rel}:${m}" 'panel present in stock, absent here' }
+    foreach ($m in $missingBlocks) {
+        $score = Get-RefScore $rel $m
+        $detail = if ($null -eq $score) {
+            'panel present in stock, absent here'
+        } else {
+            $verdict = switch ($score) {
+                3       { 'ALL 3 reference HUDs carry it -- this HUD is the outlier, likely rot' }
+                2       { '2 of 3 reference HUDs carry it' }
+                1       { '1 of 3 reference HUDs carries it' }
+                default { 'NO reference HUD carries it -- routinely stripped, likely design' }
+            }
+            "stock has it, we do not. $verdict"
+        }
+        Add-Finding 'rot' "${rel}:${m}" $detail
+    }
 }
 
 # ---------------------------------------------------------------------------------------------
@@ -255,6 +324,34 @@ foreach ($c in $order) {
     if ($items.Count -eq 0) { continue }
     Head "$($labels[$c])  ($($items.Count))"
     foreach ($i in $items) { Write-Host ("  {0}`n      {1}" -f $i.Key, $i.Detail) }
+}
+
+# Corroboration summary over the KNOWN gaps. The snapshot deliberately says nothing about whether
+# a gap is design or rot; this does, using three independent HUDs as bystanders.
+if ($refIndex.Count -gt 0 -and $accepted.Count -gt 0) {
+    $scored = @{}
+    foreach ($a in ($accepted | Where-Object Check -eq 'rot')) {
+        $i = $a.Key.IndexOf(':')
+        if ($i -lt 0) { continue }
+        $f     = $a.Key.Substring(0, $i)
+        $panel = $a.Key.Substring($i + 1)
+        $s = Get-RefScore $f $panel
+        if ($null -ne $s) {
+            if (-not $scored.ContainsKey($f)) { $scored[$f] = @(0,0,0,0) }
+            $scored[$f][$s]++
+        }
+    }
+    if ($scored.Count -gt 0) {
+        Head 'KNOWN GAPS, scored against rayshud / flawhud / budhud'
+        Write-Host ('  {0,-42} {1,5} {2,5} {3,5} {4,5}' -f 'file','all3','2of3','1of3','none') -ForegroundColor DarkGray
+        foreach ($f in ($scored.Keys | Sort-Object { -$scored[$_][3] })) {
+            $c = $scored[$f]
+            if ($c[3] -eq 0 -and $c[2] -eq 0) { continue }   # nobody else carries it either
+            Write-Host ('  {0,-42} {1,5} {2,5} {3,5} {4,5}' -f ([System.IO.Path]::GetFileName($f)), $c[3], $c[2], $c[1], $c[0])
+        }
+        Write-Host '      all3 = every maintained HUD carries it and we do not; that is the candidate work.' -ForegroundColor DarkGray
+        Write-Host '      none = every maintained HUD drops it too; that is design, not rot.' -ForegroundColor DarkGray
+    }
 }
 
 if ($ShowAccepted -and $accepted.Count -gt 0) {
