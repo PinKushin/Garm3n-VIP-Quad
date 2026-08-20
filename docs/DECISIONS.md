@@ -194,3 +194,38 @@ neither a coordinate assertion nor the author's 2017 screenshot could settle it.
 
 Grown by exactly one row on each ladder rather than a round number: `tall` 250 → 260,
 `tall_minmode` 106 → 113 (the ladders step 10 and 7), MvM variant 171 → 181.
+
+## 10. Rot detection reports a DELTA, not absolute gaps
+
+Run absolutely, the checker finds 275 gaps against the shipped stock HUD, and nearly
+all are Garm3n deliberately stripping stock decoration in 2017 — every
+`titlelabeldropshadow`, `divider`, `mainbackground` and `numberbg`. From a single
+snapshot "Valve added this" and "the author removed this" are indistinguishable: both
+are a block in stock that is not here.
+
+Change over time is distinguishable. So `tests/rot-snapshot.txt` records the known gap
+set and a run reports only what is new since. A tool that cries 275 times is a tool
+nobody reads.
+
+The snapshot must never be regenerated without reviewing the delta first, or new rot is
+laundered into the accepted set and the tool becomes decorative.
+
+## 11. The four dangling fonts use Garm3n's Default, on the owner's instruction
+
+`HudMenuNumberFont`, `Garm3n`, `Garm3nFontTargetSmaller` and `HudFontGarm3nTiny2` are
+referenced by this HUD's `.res` files and were never defined anywhere — not here, not in
+stock. They are not new rot; they have been dangling since the HUD was written, and every
+panel using one has been rendering in the *engine's* fallback face rather than Garm3n's.
+
+The owner's direction:
+
+> "if its default font it should probably use whatever garmen uses as his default"
+
+So all four are defined identically to this scheme's `Default` — Novecentowide-DemiBold
+at 10.
+
+**Sizes were deliberately not invented.** Two names hint at one (`HudFontGarm3nTiny2`
+wants smaller, `Garm3nFontTargetSmaller` likewise) and `HudMenuNumberFont` draws
+build-menu slot numbers which probably wants larger, but a guessed number is a confident
+wrong answer that nobody later knows to question. They match `Default` until someone
+looks at them.

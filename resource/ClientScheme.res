@@ -502,6 +502,67 @@ Scheme
 			}
 		}
 
+		//-------------------------------------------------------------------------------
+		// Four names this HUD's .res files ask for that nothing ever defined. They are not
+		// new rot -- they have been dangling since the HUD was written, and every panel
+		// using one has been rendering in the ENGINE's fallback face, not Garm3n's.
+		//
+		// Defined to match "Default" above exactly, per the owner's instruction: if they
+		// are falling back to a default, it should be Garm3n's default rather than the
+		// engine's.
+		//
+		// Sizes are deliberately NOT invented. Two of the names hint at one
+		// (HudFontGarm3nTiny2 wants smaller, Garm3nFontTargetSmaller likewise) and
+		// HudMenuNumberFont draws build-menu slot numbers which probably wants larger,
+		// but guessing a number produces a confident wrong answer. They match Default
+		// until someone looks at them and tunes by eye.
+		//
+		//   HudMenuNumberFont       resource/ui/build_menu/*  (15 references)
+		//   Garm3n                  HudItemEffectMeter_PowerupBottle.res
+		//   Garm3nFontTargetSmaller FreezePanel_Basic.res
+		//   HudFontGarm3nTiny2      SpectatorTournamentGUIHealth{,_LEFT}.res
+		//-------------------------------------------------------------------------------
+		"HudMenuNumberFont"
+		{
+			"1"
+			{
+				"name"		"Novecentowide-DemiBold"
+				"tall"		"10"
+				"additive"	"0"
+				"antialias" "1"
+			}
+		}
+		"Garm3n"
+		{
+			"1"
+			{
+				"name"		"Novecentowide-DemiBold"
+				"tall"		"10"
+				"additive"	"0"
+				"antialias" "1"
+			}
+		}
+		"Garm3nFontTargetSmaller"
+		{
+			"1"
+			{
+				"name"		"Novecentowide-DemiBold"
+				"tall"		"10"
+				"additive"	"0"
+				"antialias" "1"
+			}
+		}
+		"HudFontGarm3nTiny2"
+		{
+			"1"
+			{
+				"name"		"Novecentowide-DemiBold"
+				"tall"		"10"
+				"additive"	"0"
+				"antialias" "1"
+			}
+		}
+
 		"DefaultUnderline"
 		{
 			"1"
