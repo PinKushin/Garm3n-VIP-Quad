@@ -229,3 +229,24 @@ wants smaller, `Garm3nFontTargetSmaller` likewise) and `HudMenuNumberFont` draws
 build-menu slot numbers which probably wants larger, but a guessed number is a confident
 wrong answer that nobody later knows to question. They match `Default` until someone
 looks at them.
+
+## 12. The 34 ScoreBoard.res gaps are design, not rot — confirmed by looking
+
+The rot checker lists 34 substantive gaps in `ScoreBoard.res` (leader avatars,
+`ClassModelPanel.CustomClassData` for all nine classes, `PlayerNameBG`, various `if_mvm`
+variants). Nothing mechanical can tell whether Valve added those or Garm3n deleted them.
+
+The owner settled it by using both scoreboards:
+
+> "i belive the scoreboard is fine, the 6v6 and 18v18 or whatever it is, both work fine"
+
+(6v6 / 16v16 here are this HUD's `cl_hud_minmode` toggle, bound to two menu buttons in
+`GameMenu.res`, not separate scoreboards.)
+
+So the omissions are Garm3n's redesign and should not be "fixed". This is exactly the
+class of question the snapshot defers rather than answers, and the only instrument that
+resolves it is a person looking at the running game.
+
+Still unverified as of this entry: whether `MainBG` now covers the Damage/Support row
+after entry 9 grew it. That is a separate question about a change I made, not about the
+gaps above.
