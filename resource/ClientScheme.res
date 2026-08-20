@@ -477,6 +477,7 @@ Scheme
 	{
 		// UI buttons, custom font, (256x64)
 		"Buttons"		"materials/vgui/fonts/buttons_32.vbf"
+		"ButtonsSC"		"materials/vgui/fonts/buttons_sc.vbf"
 	}
 
 
@@ -2467,6 +2468,42 @@ Scheme
 				"scaley"	"0.4"
 			}
 		}
+		// Steam Controller / Steam Deck glyphs. Requested by the client code, not
+		// by any .res file, so their absence shows up only as unrendered buttons.
+		// Copied from the stock scheme; the HUD has no styling opinion on a bitmap
+		// glyph sheet.
+		GameUIButtonsSteamController
+		{
+			"1"
+			{
+				"bitmap"	"1"
+				"name"		"ButtonsSC"
+				"scalex"	"0.5"
+				"scalex_lodef"		"0.75"
+				"scaley"	"0.5"
+				"scaley_lodef"		"0.75"
+			}
+		}
+		GameUIButtonsSteamControllerSmall
+		{
+			"1"
+			{
+				"bitmap"	"1"
+				"name"		"ButtonsSC"
+				"scalex"	"0.25"
+				"scaley"	"0.25"
+			}
+		}
+		GameUIButtonsSteamControllerSmallest
+		{
+			"1"
+			{
+				"bitmap"	"1"
+				"name"		"ButtonsSC"
+				"scalex"	"0.15"
+				"scaley"	"0.15"
+			}
+		}
 		"GameUIButtonText"
 		{
 			"1"
@@ -3434,7 +3471,42 @@ Scheme
 				"additive"	"0"
 				"antialias" 	"1"
 			}
-		}	
+		}
+		// The three below exist in the stock scheme but were never carried over.
+		// Sizes follow this HUD's flattened item-font scale (one step above the
+		// matching Large/Small entry) rather than the stock 18/14/8, because every
+		// sibling in this family is already restyled to Novecentowide-Medium and a
+		// stock TF2 Build glyph next to them would read as a different HUD.
+		"ItemFontNameLarger"
+		{
+			"1"
+			{
+				"name"		"Novecentowide-Medium"
+				"tall"		"12"
+				"additive"	"0"
+				"antialias" "1"
+			}
+		}
+		"ItemFontAttribLarger"
+		{
+			"1"
+			{
+				"name"		"Novecentowide-Medium"
+				"tall"		"11"
+				"additive"	"0"
+				"antialias" 	"1"
+			}
+		}
+		"ItemFontAttribSmallv2"
+		{
+			"1"
+			{
+				"name"		"Novecentowide-Medium"
+				"tall"		"8"
+				"additive"	"0"
+				"antialias" 	"1"
+			}
+		}
 		
 		"AchievementTracker_Name"
 		{
@@ -4083,6 +4155,22 @@ Scheme
 				"weight"	"400"
 				"additive"	"0"
 				"antialias" "1"
+			}
+		}
+
+		// Requested by CHudCloseCaption, which no .res file references, so the
+		// omission was invisible until the scheme was diffed against stock.
+		// Deliberately left as stock Tahoma: captions are an accessibility
+		// feature and a decorative face with a narrow glyph range would make
+		// them harder to read, not more on-brand.
+		"CloseCaption"
+		{
+			"1"
+			{
+				"name"		"Tahoma"
+				"tall"		"8"
+				"weight"	"500"
+				"range"		"0x0000 0x017F" //	Basic Latin, Latin-1 Supplement, Latin Extended-A
 			}
 		}
 	}
