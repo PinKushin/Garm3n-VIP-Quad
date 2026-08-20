@@ -442,3 +442,42 @@ Where they disagree, the same-author column is the one to trust. `winpanel.res` 
 clearest case: other authors style it (8 gaps carried), Garm3n never does (0 carried,
 15 not). That is his choice, not rot — and the other-author column alone would have
 sent us to "fix" it.
+
+## 16. HudTournament.res left alone — the pro HUDs do not style it either
+
+`HudTournament.res` was the strongest candidate the rot checker ever produced: 30 of
+30 gaps carried by all three maintained HUDs, 16 of 18 by Garm3n's own. It is not
+being changed, and the reason is a flaw in how those two scores were read.
+
+**The owner looked at it first** — tournament mode, 11 bots, 6v6 — and reported it
+fine. The ready panel renders, the boxes fill the row edge to edge, no overlap.
+
+**Then the VIP subset explained why.** Checking `HudTournament.res` across Garm3n's
+six VIP HUDs, the ones built for individual competitive players:
+
+| HUD | has HudTournamentRed/BlueBG | ModeImage | ReadyHintIcon |
+|---|---|---|---|
+| VIP-Quad | no | no | no |
+| VIP-Beavern | no | no | no |
+| VIP-Konr | no | no | no |
+| VIP-SL | no | no | no |
+| VIP-Garm3n | no | no | no |
+| VIP-Stefan | **yes** | no | no |
+
+Five of six do not have the team backgrounds and none have the other two. Quad is
+consistent with its own family.
+
+**Why both corpora misled.** rayshud, flawhud and budhud are CONSUMER HUDs — they
+style everything, because that is what a public release is for. Garm3n's VIP line is
+deliberately stripped for players who want the game and not the furniture. Scoring a
+pro HUD against consumer HUDs measures the wrong property, and the all-18 sibling
+corpus blurs it too, because it mixes the VIP HUDs in with QL, OLX and REX, which are
+far more styled.
+
+The right control for THIS HUD is the VIP subset. On that comparison there is nothing
+to do.
+
+**Generalises:** before treating a gap as work, ask which corpus is actually
+comparable. "Every maintained HUD has this" and "every HUD built for the same purpose
+has this" are different claims, and only the second one bears on whether something is
+missing here.
