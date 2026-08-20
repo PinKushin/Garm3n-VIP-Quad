@@ -31,18 +31,14 @@
 		"ypos_minmode"		"r385"
 		"zpos"			"-1"
 		"wide"			"530"
-		// Grown to cover the Damage/Support row added to LocalPlayerStatsPanel.
-		// The row ladders step 10 in normal and 7 in minmode.
+		// ORIGINAL VALUES, restored. Do not grow this to fix the stats block.
 		//
-		// Normal: 250 -> 260, one row. Confirmed correct by looking.
-		//
-		// Minmode: 106 -> 113 -> 120, TWO rows. One row was not enough, which was
-		// only visible by looking at 6v6 -- the last row still rendered on the
-		// lighter background below the panel edge while 16v16 was already right.
-		// The two modes needed different amounts, so verifying one said nothing
-		// about the other.
-		"tall"			"260"
-		"tall_minmode"		"120"
+		// I twice grew MainBG trying to cover the Damage/Support row and was wrong
+		// both times: this is not the panel behind the stats, and enlarging it made
+		// it overlap elements that previously did not collide. Reverted to 250 /
+		// 106 / 171 on the owner's report.
+		"tall"			"250"
+		"tall_minmode"		"106"
 		"fillcolor"		"0 0 0 175"
 		"autoResize"	"0"
 		"pinCorner"		"0"
@@ -54,7 +50,7 @@
 			"xpos"			"c-295"
 			"ypos"			"r394"
 			"wide"			"402"
-			"tall"			"181"
+			"tall"			"171"
 		}
 	}
 	"MvMBG"
