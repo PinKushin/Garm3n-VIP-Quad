@@ -276,7 +276,10 @@ if ($UpdateSnapshot) {
         "# $($allGaps.Count) entries",
         ''
     )
-    [System.IO.File]::WriteAllLines($snapshotPath, ($header + ($allGaps | Sort-Object -Unique)))
+    # Join with "`n" rather than WriteAllLines, which emits CRLF on Windows and trips the
+    # "CRLF will be replaced by LF" warning that .gitattributes eol=lf exists to remove.
+    $lines = $header + ($allGaps | Sort-Object -Unique)
+    [System.IO.File]::WriteAllText($snapshotPath, (($lines -join "`n") + "`n"))
     Write-Host "SNAPSHOT  wrote $($allGaps.Count) entries to tests/rot-snapshot.txt" -ForegroundColor Yellow
     exit 0
 }

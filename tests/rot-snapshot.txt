@@ -4,8 +4,8 @@
 # Do that ONLY after reviewing the delta -- regenerating blindly launders new rot into
 # the accepted set, which is the one way this tool can be made useless.
 #
-# Generated 2026-08-19 22:17 against TF2 build 24245096
-# 284 entries
+# Generated 2026-08-19 22:25 against TF2 build 24245096
+# 265 entries
 
 loc|#Building_hud_sapper_not_built
 loc|#CMenu_ClassHighlightPanel_Title
@@ -270,7 +270,3 @@ rot|scripts/hudlayout.res:csecondarytargetid.if_vr
 rot|scripts/itemtest_manifest.txt:animation_mdl_files
 rot|scripts/itemtest_manifest.txt:texture_types._illum
 rot|scripts/itemtest_manifest.txt:texture_types._phongexponent
-scheme|Garm3n
-scheme|Garm3nFontTargetSmaller
-scheme|HudFontGarm3nTiny2
-scheme|HudMenuNumberFont
