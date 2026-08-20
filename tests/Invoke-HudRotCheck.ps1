@@ -154,10 +154,27 @@ if (Test-Path $snapshotPath) {
 #
 # Populate with resource/ and scripts/ .res and .txt from each HUD, under refhuds/<name>/.
 # Absent entirely, everything still works and the column is simply omitted.
-$refRoot  = Join-Path $env:LOCALAPPDATA 'Garm3n-HudRot\refhuds'
-$refIndex = @{}
-if (Test-Path $refRoot) {
-    foreach ($hud in (Get-ChildItem $refRoot -Directory)) {
+# TWO corpora, answering two different questions.
+#
+#   refhuds/  rayshud, flawhud, budhud -- other authors, actively maintained.
+#             "Do modern HUDs carry this?" Conflates what TF2 needs with what a
+#             given designer chooses to style.
+#
+#   sibhuds/  Garm3n's own other HUDs, 18 of them from TF2HUDsArchive.
+#             "Does GARM3N carry this?" Controls for taste, because it is the same
+#             designer, so a difference means something about THIS HUD rather than
+#             about aesthetics.
+#
+# The second is the sharper instrument and it overturned a call the first produced.
+# HudStopWatch.res scored 0-of-3 against the maintained HUDs -- every one drops all
+# eight of its gaps -- so it was written off as design. Garm3n's own HUDs carry all
+# eight. Quad is the outlier among its author's own work, which is the opposite
+# reading, and only the same-author corpus can see it.
+function New-HudIndex {
+    param([Parameter(Mandatory)][string]$Root)
+    $out = @{}
+    if (-not (Test-Path $Root)) { return $out }
+    foreach ($hud in (Get-ChildItem $Root -Directory)) {
         $idx = @{}
         foreach ($f in (Get-ChildItem $hud.FullName -Recurse -File -Include '*.res')) {
             $key = $f.Name.ToLowerInvariant()
@@ -168,29 +185,48 @@ if (Test-Path $refRoot) {
                 [void]$idx[$key].Add($w.Value)
             }
         }
-        $refIndex[$hud.Name] = $idx
+        $out[$hud.Name] = $idx
     }
-    Info "reference HUDs: $($refIndex.Keys -join ', ')"
-} else {
-    Info "no reference HUDs at $refRoot -- corroboration column disabled"
+    return $out
 }
 
-function Get-RefScore {
-    <#  How many reference HUDs define this panel in their copy of the same file.
+$refRoot  = Join-Path $env:LOCALAPPDATA 'Garm3n-HudRot\refhuds'
+$sibRoot  = Join-Path $env:LOCALAPPDATA 'Garm3n-HudRot\sibhuds'
+$refIndex = New-HudIndex $refRoot
+$sibIndex = New-HudIndex $sibRoot
+if ($refIndex.Count) { Info "other-author HUDs: $($refIndex.Keys -join ', ')" }
+else { Info "no reference HUDs at $refRoot -- that column disabled" }
+if ($sibIndex.Count) { Info "same-author HUDs: $($sibIndex.Count) of Garm3n's own" }
+else { Info "no sibling HUDs at $sibRoot -- that column disabled" }
+
+function Get-CorpusScore {
+    <#  How many HUDs in a corpus define this panel in their copy of the same file.
         Matches the leaf name inside the same-named .res anywhere in that HUD's tree, which is
         deliberately loose: budhud splits one stock file across many, so an exact path match
         would report false absences.  #>
-    param([string]$RelFile, [string]$PanelPath)
-    if ($refIndex.Count -eq 0) { return $null }
+    param([hashtable]$Index, [string]$RelFile, [string]$PanelPath)
+    if ($Index.Count -eq 0) { return $null }
     $base = [System.IO.Path]::GetFileName($RelFile).ToLowerInvariant()
-    $leaf = ($PanelPath -split '\.')[-1]
+    $parts = $PanelPath -split '\.'
+    $leaf = $parts[-1]
+    # A conditional block's leaf is the CONDITION, not a panel: "hudstopwatchbg.if_comp" ends in
+    # "if_comp", which no HUD contains as a control name. Scoring that matched nothing and
+    # silently zeroed every conditional gap -- HudStopWatch.res dropped out of the report
+    # entirely while all 18 sibling HUDs demonstrably carry its panels. Step back to the panel
+    # the condition modifies.
+    if ($leaf -match '^if_' -and $parts.Count -ge 2) { $leaf = $parts[-2] }
     $n = 0
-    foreach ($hud in $refIndex.Keys) {
-        $idx = $refIndex[$hud]
+    foreach ($hud in $Index.Keys) {
+        $idx = $Index[$hud]
         if ($idx.ContainsKey($base) -and $idx[$base].Contains($leaf)) { $n++ }
     }
     return $n
 }
+
+function Get-RefScore { param([string]$RelFile, [string]$PanelPath)
+    Get-CorpusScore $refIndex $RelFile $PanelPath }
+function Get-SibScore { param([string]$RelFile, [string]$PanelPath)
+    Get-CorpusScore $sibIndex $RelFile $PanelPath }
 
 $findings = [System.Collections.Generic.List[object]]::new()
 $accepted = [System.Collections.Generic.List[object]]::new()
@@ -392,7 +428,8 @@ foreach ($c in $order) {
 # Corroboration summary over the KNOWN gaps. The snapshot deliberately says nothing about whether
 # a gap is design or rot; this does, using three independent HUDs as bystanders.
 if ($refIndex.Count -gt 0 -and $accepted.Count -gt 0) {
-    $scored = @{}
+    $scored    = @{}
+    $sibScored = @{}     # [0] = no sibling has it, [1] = ALL siblings have it
     foreach ($a in ($accepted | Where-Object Check -eq 'rot')) {
         $i = $a.Key.IndexOf(':')
         if ($i -lt 0) { continue }
@@ -403,17 +440,27 @@ if ($refIndex.Count -gt 0 -and $accepted.Count -gt 0) {
             if (-not $scored.ContainsKey($f)) { $scored[$f] = @(0,0,0,0) }
             $scored[$f][$s]++
         }
+        $sv = Get-SibScore $f $panel
+        if ($null -ne $sv) {
+            if (-not $sibScored.ContainsKey($f)) { $sibScored[$f] = @(0,0) }
+            # "all" is deliberately a majority rather than unanimity: the 18 siblings span years
+            # and several are stripped-down variants, so requiring every one would report nothing.
+            if ($sv -ge [int]($sibIndex.Count * 0.6)) { $sibScored[$f][1]++ } else { $sibScored[$f][0]++ }
+        }
     }
     if ($scored.Count -gt 0) {
-        Head 'KNOWN GAPS, scored against rayshud / flawhud / budhud'
-        Write-Host ('  {0,-42} {1,5} {2,5} {3,5} {4,5}' -f 'file','all3','2of3','1of3','none') -ForegroundColor DarkGray
-        foreach ($f in ($scored.Keys | Sort-Object { -$scored[$_][3] })) {
+        Head 'KNOWN GAPS, scored against two corpora'
+        Write-Host ('  {0,-38} {1,11}   {2,15}' -f '', 'other authors', "Garm3n's own") -ForegroundColor DarkGray
+        Write-Host ('  {0,-38} {1,5} {2,5}   {3,7} {4,7}' -f 'file','all','none','all','none') -ForegroundColor DarkGray
+        foreach ($f in ($scored.Keys | Sort-Object { -$sibScored[$_][1] })) {
             $c = $scored[$f]
-            if ($c[3] -eq 0 -and $c[2] -eq 0) { continue }   # nobody else carries it either
-            Write-Host ('  {0,-42} {1,5} {2,5} {3,5} {4,5}' -f ([System.IO.Path]::GetFileName($f)), $c[3], $c[2], $c[1], $c[0])
+            $s = if ($sibScored.ContainsKey($f)) { $sibScored[$f] } else { @(0,0) }
+            if ($c[3] -eq 0 -and $c[2] -eq 0 -and $s[1] -eq 0) { continue }
+            Write-Host ('  {0,-38} {1,5} {2,5}   {3,7} {4,7}' -f `
+                ([System.IO.Path]::GetFileName($f)), $c[3], $c[0], $s[1], $s[0])
         }
-        Write-Host '      all3 = every maintained HUD carries it and we do not; that is the candidate work.' -ForegroundColor DarkGray
-        Write-Host '      none = every maintained HUD drops it too; that is design, not rot.' -ForegroundColor DarkGray
+        Write-Host "      Garm3n's own is the sharper column: same designer, so a difference is about" -ForegroundColor DarkGray
+        Write-Host '      THIS HUD rather than about taste. Where the two disagree, trust that one.' -ForegroundColor DarkGray
     }
 }
 

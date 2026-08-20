@@ -404,3 +404,41 @@ consistent enough to be deliberate by someone — but the attribution does not.
 
 There is no pre-2017 history here to check against, so distinguishing them would need
 Garm3n's original release, which this fork does not contain.
+
+### C6. CORRECTION — the "HudStopWatch is design" call was a measurement bug
+
+I reported that `HudStopWatch.res` scored 0-of-3 against rayshud/flawhud/budhud —
+every maintained HUD drops all 8 of its gaps — and concluded it was design rather
+than rot, and told the owner not to bother with it.
+
+That zero was a bug in my scorer, not a fact about the HUDs.
+
+The scorer took the LAST dot segment of a gap path as the panel name. `HudStopWatch`'s
+gaps all end in `.if_comp`, so it was searching every HUD for a control called
+`if_comp`, which none contain. The score was structurally zero and could never have
+been anything else. It silently affected every conditional gap in both corpora.
+
+With the scorer stepping back to the panel the condition modifies, `HudStopWatch.res`
+scores **8 of 8 in both** columns. Both corpora agree it is a genuine gap — the exact
+opposite of what I reported.
+
+**The lesson is the one this document keeps relearning:** a zero from an instrument is
+not evidence until the instrument is shown able to produce a non-zero. I had a
+"no maintained HUD carries this" result that was indistinguishable from
+"my query matches nothing", and I reported the first reading without checking the
+second. It surfaced only because the owner asked about Garm3n's other HUDs, which put
+the same panels in front of me from a different direction.
+
+### C7. Two corpora, and the same-author one is sharper
+
+`refhuds/` is rayshud, flawhud and budhud — other authors, actively maintained.
+`sibhuds/` is 18 of Garm3n's own HUDs from TF2HUDsArchive.
+
+They answer different questions. "Do modern HUDs carry this?" conflates what TF2 needs
+with what a designer chooses to style. "Does GARM3N carry this?" controls for taste,
+because it is the same designer, so a difference is about THIS HUD.
+
+Where they disagree, the same-author column is the one to trust. `winpanel.res` is the
+clearest case: other authors style it (8 gaps carried), Garm3n never does (0 carried,
+15 not). That is his choice, not rot — and the other-author column alone would have
+sent us to "fix" it.
