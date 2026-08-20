@@ -284,12 +284,27 @@
 			"visible"		"0"
 		}
 	}	
+	// Parked offscreen: these mouseover tooltips are removed on purpose.
+	//
+	// They fired on only a couple of buttons, and their text merely repeated the
+	// label already under the cursor -- a tooltip reading "OPTIONS" on a button
+	// labelled OPTIONS. On top of that this HUD had them at zpos 1 where stock uses
+	// 10000, so they rendered UNDERNEATH the menu text and read as a glitch.
+	//
+	// zpos 10000 would have fixed the layering (that is what rayshud does; flawhud
+	// uses 100) and the one-line change is right here if they are ever wanted back:
+	// restore ypos 0 and set zpos 10000.
+	//
+	// Moved rather than deleted, and every child below is left intact. A stock panel
+	// declared WITHOUT the children the menu code expects to find inside it is what
+	// crashed TF2 earlier on this branch; an offscreen ypos cannot do that, and is
+	// the same technique budhud uses for panels it does not want.
 	"TooltipPanel"
 	{
 		"ControlName"	"EditablePanel"
 		"fieldName"		"TooltipPanel"
 		"xpos"			"0"
-		"ypos"			"0"
+		"ypos"			"9999"
 		"zpos"			"1"
 		"wide"			"150"
 		"tall"			"50"
