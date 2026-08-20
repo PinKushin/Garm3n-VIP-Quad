@@ -149,6 +149,16 @@ and tf.txt's copy is simply dead code, which explains a stale commented line jus
 well. I had one ambiguous artifact and called it verification. Differential evidence
 across independent implementations beat it outright.
 
+**Now confirmed by observation, which is stronger than either argument.** With the
+revert in place the owner built a full ÜberCharge on a local server and reported the
+meter flashing — the `HudMedicCharged` loop cycling the meter white to transparent
+every 0.6s. The animation layer works on the ORIGINAL order, which is the direct
+evidence that the original order was never broken.
+
+So the sequence was: I diagnosed a defect that did not exist, "fixed" it, thereby
+creating the defect, and reverted on evidence from three other HUDs. The in-game
+check closes it.
+
 ### C3. REVERSAL — omitting a stock menu panel is safe; declaring it badly is not
 
 **Position I took:** a panel the client constructs but the `.res` never names keeps
