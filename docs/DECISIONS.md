@@ -117,3 +117,80 @@ It still needs pushing to `origin` for the links to work on the fork's own READM
 
 Lesson worth keeping: a relative link in a GitHub README is not a filesystem path,
 and "the file is not in this checkout" is not evidence that a link is dead.
+
+### C2. REVERSAL — animation load order: TF2 keeps the FIRST definition, not the last
+
+**Position I took:** the manifest listed `hudanimations_custom.txt` before
+`hudanimations_tf.txt`, therefore all 15 of this HUD's animation events were being
+overwritten by stock and the whole animation layer was dead. I moved custom last
+and called it verified.
+
+**Position after evidence:** the original order was correct. TF2 keeps the first
+definition. My change is what silenced the animations.
+
+**What changed my mind:** three actively maintained HUDs, all of which load custom
+*before* `hudanimations_tf.txt`:
+
+| HUD | Version | Custom events | Also defined in stock tf.txt |
+|---|---|---|---|
+| rayshud | 2026.0111 | 24 | 20 |
+| flawhud | 2026.0110 | 23 | 19 |
+| budhud | 2511_01 | across 11 files | many |
+
+The overlapping names are the same ones this HUD defines — `HudHealthBonusPulse`,
+`HudHealthDyingPulse`, `HudLowAmmoPulse`, `HudMedicCharged`. All three HUDs
+demonstrably have working pulses. Under last-wins, all three would be broken too.
+
+**Why I got it wrong, which is the part worth keeping:** I inferred the semantics
+from a single artifact — Valve commented out a `TextColor` line in tf.txt's copy of
+`OpenWeaponSelectionMenu`, and I argued that edit is a no-op unless the later file
+replaces the earlier. Under first-wins the HL2 file wins those seven shared events
+and tf.txt's copy is simply dead code, which explains a stale commented line just as
+well. I had one ambiguous artifact and called it verification. Differential evidence
+across independent implementations beat it outright.
+
+### C3. REVERSAL — omitting a stock menu panel is safe; declaring it badly is not
+
+**Position I took:** a panel the client constructs but the `.res` never names keeps
+its constructor geometry, usually the top-left corner, so every unwanted stock panel
+must be explicitly declared and zeroed.
+
+**Position after evidence:** wrong, and it crashed the game. Pristine `master` omits
+all twelve panels and launches fine, so omission is demonstrably safe.
+
+**What changed my mind:** bisection. `master` launches; `6d1f423` (gitattributes +
+manifest + clientscheme + scoreboard) launches; adding the menu commit crashes at the
+main menu. Best suspect is `VRModeButton`, which stock declares as an `EditablePanel`
+carrying a `SubButton` child plus `navToRelay "SubButton"` — I declared it with no
+child, so a navigation lookup for that relay finds nothing.
+
+The general lesson: adding a declaration for a control the engine already builds is
+not a free safety measure. A partial declaration is more dangerous than no
+declaration, because the engine trusts what the `.res` says the control contains.
+
+### C4. REVERSAL (by the owner) — test harness language
+
+The owner first chose PowerShell + Pester, then reversed on learning the suite would
+live in its own repository:
+
+> "actually if its going to be a separate project, that becomes kinda its own thing,
+> it would probably be better to use C#, over powershell and pester, i picked
+> powershell because i was thinking it would be in the huds own repo. I worry that is
+> a larger project than i need though."
+
+Recorded because the reasoning is conditional, not absolute: Pester was the right call
+*for an in-repo script*, C# is the right call *for a standalone tool*. The stated
+worry about scope is part of the decision and is why the suite is being staged rather
+than built all at once.
+
+---
+
+## 9. Scoreboard background grown by one row
+
+`MainBG` was one stats row too short once Damage/Support were added, so the last row
+rendered past the bottom of the panel. Confirmed by looking at the running game —
+the placement was explicitly flagged as unverifiable when the row was added, and
+neither a coordinate assertion nor the author's 2017 screenshot could settle it.
+
+Grown by exactly one row on each ladder rather than a round number: `tall` 250 → 260,
+`tall_minmode` 106 → 113 (the ladders step 10 and 7), MvM variant 171 → 181.
