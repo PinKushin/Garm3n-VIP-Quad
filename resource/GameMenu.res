@@ -96,4 +96,15 @@
 		"subimage" "icon_whistle"
 		"tooltip" "#MMenu_RequestCoach"
 	}
+	// Copied from the stock GameMenu.res. Without this entry the button is never
+	// created at all, so in-game reporting had no menu entry on this HUD.
+	// Positioned by MainMenuOverride.res like the rest of this row.
+	"ReportPlayerButton"
+	{
+		"label"			""
+		"command"		"OpenReportPlayerDialog"
+		"OnlyInGame"	"1"
+		"subimage"		"glyph_alert"
+		"tooltip"		"#MMenu_ReportPlayer"
+	}
 }
