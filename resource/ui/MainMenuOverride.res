@@ -299,19 +299,34 @@
 	// declared WITHOUT the children the menu code expects to find inside it is what
 	// crashed TF2 earlier on this branch; an offscreen ypos cannot do that, and is
 	// the same technique budhud uses for panels it does not want.
+	// Main-menu mouseover tooltips. Shown for the icon row along the bottom
+	// (Create Server, Call Vote, Mute Players, Request Coach -- their text comes
+	// from the "tooltip" keys in resource/GameMenu.res) and for the client's own
+	// buttons such as Options.
+	//
+	// zpos is the whole point: this HUD shipped it at 1, so tooltips drew UNDER the
+	// menu text and read as a rendering glitch. Stock uses 10000 and rayshud does
+	// too; flawhud uses 100. 10000 here, matching stock.
+	//
+	// Two earlier attempts on this branch were wrong and are worth recording.
+	// Removing them was based on my mistaken claim that they fired on only a couple
+	// of buttons. And parking the panel offscreen at ypos 9999 did nothing at all,
+	// because CHudMainMenuOverride positions the tooltip at the cursor via SetPos
+	// when it shows it -- a panel the client repositions cannot be hidden by moving
+	// it in the .res.
 	"TooltipPanel"
 	{
 		"ControlName"	"EditablePanel"
 		"fieldName"		"TooltipPanel"
 		"xpos"			"0"
-		"ypos"			"9999"
-		"zpos"			"1"
+		"ypos"			"0"
+		"zpos"			"10000"
 		"wide"			"150"
 		"tall"			"50"
 		"visible"		"0"
 		"PaintBackgroundType"	"2"
 		"border"		"MainMenuBGBorder"
-		
+
 		"TipSubLabel"
 		{
 			"ControlName"	"CExLabel"
@@ -331,7 +346,7 @@
 			"fgcolor_override"	"117 107 94 255"
 			"wrap"			"1"
 		}
-		
+
 		"TipLabel"
 		{
 			"ControlName"	"CExLabel"
