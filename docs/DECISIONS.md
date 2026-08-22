@@ -72,6 +72,10 @@ fallbacks that native Linux clients use for non-Latin text, and their absence is
 plausibly a real regression — but it cannot be observed from a Windows install,
 so it was left alone rather than guessed at.
 
+**Superseded by entry 17 on 2026-08-21.** It is not a regression. The
+observation was never the missing step; the reasoning was — this HUD ships the
+faces it draws with, so there is nothing for a system fallback to stand in for.
+
 ## 7. Missing menu panels zeroed, not omitted
 
 A panel the client constructs but the `.res` never mentions keeps whatever
@@ -481,3 +485,45 @@ to do.
 comparable. "Every maintained HUD has this" and "every HUD built for the same purpose
 has this" are different claims, and only the second one bears on whether something is
 missing here.
+
+## 17. The four "unverified" checklist items are closed — three by looking, one by reasoning
+
+`UPDATE-CHECKLIST.md` carried four rows reading "not verified", and they had
+stopped describing reality. The owner:
+
+> "the winpanels and 3d player model and status icons are all right, the only
+> thing i havent tested is the linux fallbacks and they shouldnt be needed
+> because the custom fonts needed are shipped with the hud"
+
+WinPanel, the 3D player model and the status icons were checked in the running
+game and are fine. The rows are now dated and attributed rather than left blank,
+because an undated "not verified" is indistinguishable from a row nobody updated
+after verifying — which is exactly how these four went stale.
+
+**The Linux fallbacks are not a gap, and this supersedes the hedge in entry 6.**
+That entry called their absence "plausibly a real regression" that could not be
+observed from a Windows install, and left it alone. The observation was never
+the missing step; the reasoning was. This HUD ships its own faces —
+`Novecentowide-DemiBold`, `Novecentowide-Medium`, `Paula`, `FORMASGE` and
+`symbol`, all inside `resource/` — so every face the design actually draws with
+travels with the HUD and needs no system font to substitute for it. Stock's
+`linux_fonts` entries exist to stand in for faces the client expects to find
+installed. A HUD that carries its own does not need the substitution.
+
+**One honest edge, which does not change the conclusion.** This scheme also
+names four faces it does not ship — `Tahoma`, `Trebuchet MS`, `Courier` and
+`Marlett` — inherited from stock's own definitions. `CloseCaption` is
+deliberately Tahoma (entry 5). On Linux those would fall back to whatever the
+engine picks rather than to stock's DejaVu/Liberation set. That is a question
+about four stock-inherited faces, not about this HUD's design, and it is worth
+recording so nobody re-opens the whole item on finding it.
+
+### The failure mode worth keeping
+
+A stale checklist is not neutral. This one was read by another project — the
+site's program page — and produced a **Beta** badge for a HUD that is Stable.
+The document was wrong, the reader was reasonable, and the wrong conclusion
+looked well-sourced precisely because it cited a document in the repo.
+
+So: verify a row and date it in the same pass. "Not verified" that has gone
+stale is worse than no row at all, because it reads as a finding.

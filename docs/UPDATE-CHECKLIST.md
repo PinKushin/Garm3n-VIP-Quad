@@ -34,7 +34,7 @@ the HUD was maintained deliberately rather than patched ad hoc:
 | Add `info.vdf` | **Done.** Present, `ui_version 3`. |
 | Update animations | Done, and note the manifest order is CORRECT as shipped — TF2 keeps the FIRST definition. See DECISIONS C2, where changing it broke every animation. |
 | Update HudLayout | **Complete** — the rot checker reports zero missing elements. |
-| Update ClientScheme | Mostly. Six stock fonts restored 2026-08; `CustomFontFiles` still omits `ocra` and the Linux fallbacks (DECISIONS 6). |
+| Update ClientScheme | **Done.** Six stock fonts restored 2026-08. `CustomFontFiles` still omits `ocra` and the Linux fallbacks, and neither is a gap — see DECISIONS 17: this HUD ships its own faces, so nothing it draws with needs a system substitute. |
 | Remove outdated files | Appears done by Hypnootize; no crash-on-load. |
 
 ### Main
@@ -45,13 +45,13 @@ the HUD was maintained deliberately rather than patched ad hoc:
 | Fix MatchStatus and Timer | Overridden here; done 2018. |
 | Fix Scoreboard | Overridden; verified in both modes 2026. |
 | Fix Tournament Panel | Overridden; **verified fine by looking** — see DECISIONS 16. |
-| Fix WinPanel | Overridden. Not separately verified. |
+| Fix WinPanel | Overridden. **Verified by the owner, 2026-08-21** — it is fine. |
 | Fix Vaccinator UI | Not overridden — stock fallback. |
 | Add new weapon meters | Present, plus `HudItemEffectMeter_Action.res` added 2026 (it was missing and spamming the console). |
 | Fix chat positioning | Done 2020. |
 | Add killstreak counter | Present. |
-| Add 3D player model | Not verified. |
-| Add missing status icons | Not verified. |
+| Add 3D player model | **Verified by the owner, 2026-08-21** — it is fine. |
+| Add missing status icons | **Verified by the owner, 2026-08-21** — they are fine. |
 | War paints support | Presumed done with Jungle Inferno. |
 | Fix New Item Found panel | Presumed done with Jungle Inferno. |
 | Fix misplaced MvM money | Done 2023. |
